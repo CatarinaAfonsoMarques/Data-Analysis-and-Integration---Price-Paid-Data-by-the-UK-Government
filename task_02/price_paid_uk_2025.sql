@@ -36,7 +36,7 @@ CREATE TABLE price_paid_transactions (
   ppd_category CHAR(1) NOT NULL CHECK (ppd_category IN ('A','B')),	-- A = Standard, B = Additional
   record_status CHAR(1) NOT NULL CHECK (record_status IN ('A','C','D')),	-- A = Added, C = Changed, D = Deleted
   PRIMARY KEY (transaction_id)
-)
+);
 
 -- Note: CHECK constraints are enforced only in MySQL 8.0+, ignored in 5.7
 
@@ -50,3 +50,4 @@ LOAD DATA LOCAL INFILE '/home/aid/Downloads/project/task_01/pp-2025.csv'
 	(transaction_id, price, transfer_date, postcode, property_type,
  	newly_built, duration, paon, saon, street, locality, town_city,
  	district, county, ppd_category, record_status);
+
