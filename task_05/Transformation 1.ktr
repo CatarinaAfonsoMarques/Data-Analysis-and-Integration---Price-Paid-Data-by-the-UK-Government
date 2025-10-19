@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <transformation>
   <info>
-    <name>dim_time_2</name>
+    <name>Transformation 1</name>
     <description/>
     <extended_description/>
     <trans_version/>
@@ -427,9 +427,9 @@
     <clusterschemas>
     </clusterschemas>
     <created_user>-</created_user>
-    <created_date>2025/09/22 18:43:21.489</created_date>
+    <created_date>2025/10/17 14:34:27.553</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2025/09/22 18:43:21.489</modified_date>
+    <modified_date>2025/10/17 14:34:27.553</modified_date>
     <key_for_session_key/>
     <is_key_private>N</is_key_private>
   </info>
@@ -499,11 +499,11 @@
     </attributes>
   </connection>
   <connection>
-    <name>price_paid_dw</name>
+    <name>price_paid_uk_2025_dw</name>
     <server>localhost</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>price_paid_dw</database>
+    <database>price_paid_uk_2025_dw</database>
     <port>3306</port>
     <username>aid</username>
     <password>Encrypted 2be98afc86aa7f2e4cb79ce10be93a6de</password>
@@ -564,15 +564,80 @@
   <order>
     <hop>
       <from>Table input</from>
-      <to>Calculator</to>
+      <to>Sort rows</to>
       <enabled>Y</enabled>
     </hop>
     <hop>
-      <from>Calculator</from>
+      <from>Sort rows</from>
       <to>Insert / update</to>
       <enabled>Y</enabled>
     </hop>
   </order>
+  <step>
+    <name>Insert / update</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>price_paid_uk_2025_dw</connection>
+    <commit>100</commit>
+    <update_bypassed>Y</update_bypassed>
+    <lookup>
+      <schema>price_paid_uk_2025_dw</schema>
+      <table>dim_property</table>
+      <key>
+        <name>property_type</name>
+        <field>property_type</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>old_new</name>
+        <field>newly_built</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>duration</name>
+        <field>duration</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>property_type</name>
+        <rename>property_type</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>newly_built</name>
+        <rename>old_new</rename>
+        <update>Y</update>
+      </value>
+      <value>
+        <name>duration</name>
+        <rename>duration</rename>
+        <update>Y</update>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>272</xloc>
+      <yloc>64</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
   <step>
     <name>Table input</name>
     <type>TableInput</type>
@@ -585,9 +650,12 @@
       <schema_name/>
     </partitioning>
     <connection>price_paid_data</connection>
-    <sql>SELECT DISTINCT transfer_date
+    <sql>SELECT DISTINCT
+  property_type
+, old_new
+, duration
 FROM price_paid_data.transactions
-WHERE transfer_date IS NOT NULL;</sql>
+</sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
@@ -596,13 +664,59 @@ WHERE transfer_date IS NOT NULL;</sql>
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
       <value-meta>
-        <type>Date</type>
+        <type>String</type>
         <storagetype>normal</storagetype>
-        <name>transfer_date</name>
-        <length>-1</length>
+        <name>property_type</name>
+        <length>1</length>
         <precision>-1</precision>
         <origin>Table input</origin>
-        <comments>transfer_date</comments>
+        <comments>property_type</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>Europe/Lisbon</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>old_new</name>
+        <length>1</length>
+        <precision>-1</precision>
+        <origin>Table input</origin>
+        <comments>old_new</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>Europe/Lisbon</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
+        <name>duration</name>
+        <length>1</length>
+        <precision>-1</precision>
+        <origin>Table input</origin>
+        <comments>duration</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -629,13 +743,13 @@ WHERE transfer_date IS NOT NULL;</sql>
     </remotesteps>
     <GUI>
       <xloc>48</xloc>
-      <yloc>48</yloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Calculator</name>
-    <type>Calculator</type>
+    <name>Sort rows</name>
+    <type>SortRows</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -644,52 +758,23 @@ WHERE transfer_date IS NOT NULL;</sql>
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <failIfNoFile>Y</failIfNoFile>
-    <calculation>
-      <field_name>year_id</field_name>
-      <calc_type>YEAR_OF_DATE</calc_type>
-      <field_a>transfer_date</field_a>
-      <field_b/>
-      <field_c/>
-      <value_type>None</value_type>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
-    </calculation>
-    <calculation>
-      <field_name>month_id</field_name>
-      <calc_type>MONTH_OF_DATE</calc_type>
-      <field_a>transfer_date</field_a>
-      <field_b/>
-      <field_c/>
-      <value_type>None</value_type>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
-    </calculation>
-    <calculation>
-      <field_name>day_id</field_name>
-      <calc_type>DAY_OF_MONTH</calc_type>
-      <field_a>transfer_date</field_a>
-      <field_b/>
-      <field_c/>
-      <value_type>None</value_type>
-      <value_length>-1</value_length>
-      <value_precision>-1</value_precision>
-      <remove>N</remove>
-      <conversion_mask/>
-      <decimal_symbol/>
-      <grouping_symbol/>
-      <currency_symbol/>
-    </calculation>
+    <directory>%%java.io.tmpdir%%</directory>
+    <prefix>out</prefix>
+    <sort_size>1000000</sort_size>
+    <free_memory/>
+    <compress>N</compress>
+    <compress_variable/>
+    <unique_rows>N</unique_rows>
+    <fields>
+      <field>
+        <name>property_type</name>
+        <ascending>Y</ascending>
+        <case_sensitive>N</case_sensitive>
+        <collator_enabled>N</collator_enabled>
+        <collator_strength>0</collator_strength>
+        <presorted>N</presorted>
+      </field>
+    </fields>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -700,72 +785,7 @@ WHERE transfer_date IS NOT NULL;</sql>
     </remotesteps>
     <GUI>
       <xloc>160</xloc>
-      <yloc>48</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Insert / update</name>
-    <type>InsertUpdate</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>price_paid_dw</connection>
-    <commit>100</commit>
-    <update_bypassed>N</update_bypassed>
-    <lookup>
-      <schema>price_paid_dw</schema>
-      <table>dim_time</table>
-      <key>
-        <name>day_id</name>
-        <field>day</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>month_id</name>
-        <field>month</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>year_id</name>
-        <field>year</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>day</name>
-        <rename>day_id</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>month</name>
-        <rename>month_id</rename>
-        <update>Y</update>
-      </value>
-      <value>
-        <name>year</name>
-        <rename>year_id</rename>
-        <update>Y</update>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>272</xloc>
-      <yloc>48</yloc>
+      <yloc>64</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
