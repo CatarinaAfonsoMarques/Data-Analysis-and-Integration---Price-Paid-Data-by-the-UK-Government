@@ -1,0 +1,46 @@
+<Schema name="Price Paid UK 2024/25">
+  <Cube name="Sales" visible="true" cache="true" enabled="true">
+    <Table name="fact_sales">
+    </Table>
+    <Dimension type="StandardDimension" visible="true" foreignKey="location_key" name="Location">
+      <Hierarchy name="Location Hierarchy" visible="true" hasAll="true" allMemberName="All Location" primaryKey="location_key">
+        <Table name="dim_location">
+        </Table>
+        <Level name="County" visible="true" column="county" type="String" uniqueMembers="false" levelType="Regular">
+        </Level>
+        <Level name="District" visible="true" column="district" type="String" uniqueMembers="false" levelType="Regular">
+        </Level>
+        <Level name="City" visible="true" column="city" type="String" uniqueMembers="false" levelType="Regular">
+        </Level>
+      </Hierarchy>
+    </Dimension>
+    <Dimension type="StandardDimension" visible="true" foreignKey="property_key" name="Property">
+      <Hierarchy name="Property Hierarchy" visible="true" hasAll="true" allMemberName="All Property" primaryKey="property_key">
+        <Table name="dim_property">
+        </Table>
+        <Level name="Property Type" visible="true" column="property_type" type="String" uniqueMembers="false" levelType="Regular">
+        </Level>
+        <Level name="Newly Built" visible="true" column="newly_built" type="String" uniqueMembers="false" levelType="Regular">
+        </Level>
+        <Level name="Duration" visible="true" column="duration" type="String" uniqueMembers="false" levelType="Regular">
+        </Level>
+      </Hierarchy>
+    </Dimension>
+    <Dimension type="TimeDimension" visible="true" foreignKey="time_key" name="Time">
+      <Hierarchy name="Time Hierarchy" visible="true" hasAll="true" allMemberName="All Dates" primaryKey="time_key">
+        <Table name="dim_time">
+        </Table>
+        <Level name="Year" visible="true" column="year" type="Integer" uniqueMembers="false" levelType="TimeYears">
+        </Level>
+        <Level name="Month" visible="true" column="month" type="Integer" uniqueMembers="false" levelType="TimeMonths">
+        </Level>
+        <Level name="Day" visible="true" column="day" type="Integer" uniqueMembers="false" levelType="TimeDays">
+        </Level>
+      </Hierarchy>
+    </Dimension>
+    <Measure name="Total Sales" column="total_sales_amount" datatype="Numeric" formatString="$ ###,###,###.00" aggregator="sum" visible="true">
+    </Measure>
+    <Measure name="Transactions" column="total_transactions" datatype="Integer" formatString="##" aggregator="count" visible="true">
+    </Measure>
+  </Cube>
+</Schema>
