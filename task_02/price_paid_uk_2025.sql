@@ -42,7 +42,7 @@ CREATE TABLE price_paid_transactions (
 
 /*Load data for the table price_paid_transactions from local csv file*/
 
-LOAD DATA LOCAL INFILE '/home/aid/Downloads/project/task_01/pp-2025.csv'
+LOAD DATA LOCAL INFILE '/home/aid/Downloads/Projeto/task_01/pp-2025.csv'
 	INTO TABLE price_paid_transactions
 	FIELDS TERMINATED BY ',' 
 	ENCLOSED BY '"'

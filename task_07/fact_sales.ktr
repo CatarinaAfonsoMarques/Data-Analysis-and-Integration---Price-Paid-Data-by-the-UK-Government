@@ -436,11 +436,11 @@
   <notepads>
   </notepads>
   <connection>
-    <name>price_paid_data</name>
+    <name>price_paid_uk_2025</name>
     <server>localhost</server>
     <type>MYSQL</type>
     <access>Native</access>
-    <database>price_paid_data</database>
+    <database>price_paid_uk_2025</database>
     <port>3306</port>
     <username>aid</username>
     <password>Encrypted 2be98afc86aa7f2e4cb79ce10be93a6de</password>
@@ -662,6 +662,81 @@
     </GUI>
   </step>
   <step>
+    <name>Insert / update</name>
+    <type>InsertUpdate</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>price_paid_uk_2025_dw</connection>
+    <commit>100</commit>
+    <update_bypassed>N</update_bypassed>
+    <lookup>
+      <schema>price_paid_uk_2025_dw</schema>
+      <table>fact_sales</table>
+      <key>
+        <name>location_key</name>
+        <field>location_key</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>time_key</name>
+        <field>time_key</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>property_key</name>
+        <field>property_key</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>total_sales_amount</name>
+        <rename>sum_sales</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>total_transactions</name>
+        <rename>transactions</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>location_key</name>
+        <rename>location_key</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>time_key</name>
+        <rename>time_key</rename>
+        <update>N</update>
+      </value>
+      <value>
+        <name>property_key</name>
+        <rename>property_key</rename>
+        <update>N</update>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>336</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>Lookup location</name>
     <type>DBLookup</type>
     <description/>
@@ -749,7 +824,7 @@
         <name2/>
       </key>
       <key>
-        <name>old_new</name>
+        <name>newly_built</name>
         <field>newly_built</field>
         <condition>=</condition>
         <name2/>
@@ -988,17 +1063,18 @@
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>price_paid_data</connection>
+    <connection>price_paid_uk_2025</connection>
     <sql>SELECT
   price
 , transfer_date
 , property_type
-, old_new
+, newly_built
 , duration
+, locality
 , town_city
 , district
 , county
-FROM price_paid_data.transactions
+FROM price_paid_uk_2025.price_paid_transactions
 </sql>
     <limit>0</limit>
     <lookup/>
@@ -1008,14 +1084,14 @@ FROM price_paid_data.transactions
     <cached_row_meta_active>N</cached_row_meta_active>
     <row-meta>
       <value-meta>
-        <type>Number</type>
+        <type>Integer</type>
         <storagetype>normal</storagetype>
         <name>price</name>
-        <length>12</length>
-        <precision>2</precision>
+        <length>9</length>
+        <precision>0</precision>
         <origin>Table input</origin>
         <comments>price</comments>
-        <conversion_Mask>####0.0#########;-####0.0#########</conversion_Mask>
+        <conversion_Mask>####0;-####0</conversion_Mask>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
         <currency_symbol/>
@@ -1079,11 +1155,11 @@ FROM price_paid_data.transactions
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
-        <name>old_new</name>
+        <name>newly_built</name>
         <length>1</length>
         <precision>-1</precision>
         <origin>Table input</origin>
-        <comments>old_new</comments>
+        <comments>newly_built</comments>
         <conversion_Mask/>
         <decimal_symbol>.</decimal_symbol>
         <grouping_symbol>,</grouping_symbol>
@@ -1125,8 +1201,31 @@ FROM price_paid_data.transactions
       <value-meta>
         <type>String</type>
         <storagetype>normal</storagetype>
+        <name>locality</name>
+        <length>100</length>
+        <precision>-1</precision>
+        <origin>Table input</origin>
+        <comments>locality</comments>
+        <conversion_Mask/>
+        <decimal_symbol>.</decimal_symbol>
+        <grouping_symbol>,</grouping_symbol>
+        <currency_symbol/>
+        <trim_type>none</trim_type>
+        <case_insensitive>N</case_insensitive>
+        <collator_disabled>Y</collator_disabled>
+        <collator_strength>0</collator_strength>
+        <sort_descending>N</sort_descending>
+        <output_padding>N</output_padding>
+        <date_format_lenient>N</date_format_lenient>
+        <date_format_locale>en_US</date_format_locale>
+        <date_format_timezone>Europe/Lisbon</date_format_timezone>
+        <lenient_string_to_number>N</lenient_string_to_number>
+      </value-meta>
+      <value-meta>
+        <type>String</type>
+        <storagetype>normal</storagetype>
         <name>town_city</name>
-        <length>255</length>
+        <length>100</length>
         <precision>-1</precision>
         <origin>Table input</origin>
         <comments>town_city</comments>
@@ -1149,7 +1248,7 @@ FROM price_paid_data.transactions
         <type>String</type>
         <storagetype>normal</storagetype>
         <name>district</name>
-        <length>255</length>
+        <length>100</length>
         <precision>-1</precision>
         <origin>Table input</origin>
         <comments>district</comments>
@@ -1172,7 +1271,7 @@ FROM price_paid_data.transactions
         <type>String</type>
         <storagetype>normal</storagetype>
         <name>county</name>
-        <length>255</length>
+        <length>100</length>
         <precision>-1</precision>
         <origin>Table input</origin>
         <comments>county</comments>
@@ -1203,81 +1302,6 @@ FROM price_paid_data.transactions
     <GUI>
       <xloc>48</xloc>
       <yloc>64</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Insert / update</name>
-    <type>InsertUpdate</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>price_paid_uk_2025_dw</connection>
-    <commit>100</commit>
-    <update_bypassed>N</update_bypassed>
-    <lookup>
-      <schema>price_paid_uk_2025_dw</schema>
-      <table>fact_sales</table>
-      <key>
-        <name>location_key</name>
-        <field>location_key</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>time_key</name>
-        <field>time_key</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <key>
-        <name>property_key</name>
-        <field>property_key</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>total_sales_amount</name>
-        <rename>sum_sales</rename>
-        <update>N</update>
-      </value>
-      <value>
-        <name>total_transactions</name>
-        <rename>transactions</rename>
-        <update>N</update>
-      </value>
-      <value>
-        <name>location_key</name>
-        <rename>location_key</rename>
-        <update>N</update>
-      </value>
-      <value>
-        <name>time_key</name>
-        <rename>time_key</rename>
-        <update>N</update>
-      </value>
-      <value>
-        <name>property_key</name>
-        <rename>property_key</rename>
-        <update>N</update>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>336</xloc>
-      <yloc>256</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
